@@ -13,7 +13,7 @@ using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
 public static class ExtractPackage
 {
-    static string TargetPackage = "unity.assetstore.sirenix.odin";
+    static string TargetPackage = "";
     static string source;
     static string location;
 
@@ -27,6 +27,11 @@ public static class ExtractPackage
 
     public static void Extract(string packageName, string sourceLocation, string targetLocation)
     {
+        if(locked)
+        {
+            return
+        }
+        locked = true;
         TargetPackage = packageName;
         source = sourceLocation;
         location = targetLocation;
@@ -37,9 +42,8 @@ public static class ExtractPackage
     
     static void CopyLocalFiles()
     {
-        if (!locked && !Directory.Exists(LocalLocation) && Directory.Exists(packageLocation))
+        if (!Directory.Exists(LocalLocation) && Directory.Exists(packageLocation))
         {
-            locked = true;
             // First get the name of an installed package
             LRequest = Client.List(false, true);
             EditorApplication.update += LProgress;
@@ -81,7 +85,6 @@ public static class ExtractPackage
         if (Request.IsCompleted)
         {
             EditorApplication.update -= Progress;
-            locked = false;
 
             if (!Directory.Exists(LocalLocation))
             {
@@ -92,6 +95,8 @@ public static class ExtractPackage
             {
                 Directory.Delete(packageLocation);
             }
+            
+                        locked = false;
         }
     }
 
