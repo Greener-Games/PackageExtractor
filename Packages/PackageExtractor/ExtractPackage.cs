@@ -103,7 +103,6 @@ public static class ExtractPackage
         CopyFilesRecursively(sourcePath, targetPath);
 
         Directory.Move(source, source + "~");
-        Directory.Delete(source);
         locked = false;
     }
     
