@@ -1,11 +1,5 @@
 {
   "dependencies": {
-    "com.atkins.unity.viewpoint": {
-      "version": "file:com.atkins.viewpoint",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
-    },
     "com.greener-games.package-extractor": {
       "version": "file:PackageExtractor",
       "depth": 0,

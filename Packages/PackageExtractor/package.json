@@ -2,11 +2,11 @@
   "name": "com.greener-games.package-extractor",
   "displayName": "Package Extracter",
   "description": "Extract part of a package into the assets folder, usefull for default scenes that need to be within the assets forlder for editing",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "unity": "2019.3",
   "license": "copyright",
   "author": {
-    "name": "Atkins",
+    "name": "Greener Games",
     "email": null,
     "url": null
   },
