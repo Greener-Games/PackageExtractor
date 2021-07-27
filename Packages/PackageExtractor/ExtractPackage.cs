@@ -23,13 +23,7 @@ public static class ExtractPackage
     static AddRequest addRequest;
 
     static bool locked;
-
-    [MenuItem("Test/Extract")]
-    static void Test()
-    {
-        Extract("unity.assetstore.sirenix.odin", "Plugins/Sirenix", "Plugins/Sirenix");
-    }
-
+    
     public static void Extract(string packageName, string sourceLocation, string targetLocation)
     {
         if (locked)
