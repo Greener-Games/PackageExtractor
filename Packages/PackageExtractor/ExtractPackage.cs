@@ -1,8 +1,6 @@
 #region
 
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnityEditor;
 using UnityEditor.PackageManager;
 using UnityEditor.PackageManager.Requests;
@@ -22,15 +20,23 @@ public static class ExtractPackage
 
     static EmbedRequest Request;
     static ListRequest LRequest;
+    static AddRequest addRequest;
 
     static bool locked;
 
+    [MenuItem("Test/Extract")]
+    static void Test()
+    {
+        Extract("unity.assetstore.sirenix.odin", "Plugins/Sirenix", "Plugins/Sirenix");
+    }
+
     public static void Extract(string packageName, string sourceLocation, string targetLocation)
     {
-        if(locked)
+        if (locked)
         {
-            return
+            return;
         }
+
         locked = true;
         TargetPackage = packageName;
         source = sourceLocation;
@@ -38,8 +44,8 @@ public static class ExtractPackage
 
         CopyLocalFiles();
     }
-    
-    
+
+
     static void CopyLocalFiles()
     {
         if (!Directory.Exists(LocalLocation) && Directory.Exists(packageLocation))
@@ -60,7 +66,15 @@ public static class ExtractPackage
                 {
                     if (package.name == TargetPackage)
                     {
-                        Embed();
+                        if (!package.isDirectDependency)
+                        {
+                            addRequest = Client.Add(package.name);
+                            EditorApplication.update += AddProgress;
+                        }
+                        else
+                        {
+                            Embed();
+                        }
                     }
                 }
             }
@@ -71,6 +85,15 @@ public static class ExtractPackage
             }
 
             EditorApplication.update -= LProgress;
+        }
+    }
+
+    static void AddProgress()
+    {
+        if (addRequest.IsCompleted)
+        {
+            EditorApplication.update -= AddProgress;
+            Embed();
         }
     }
 
@@ -95,23 +118,24 @@ public static class ExtractPackage
             {
                 Directory.Delete(packageLocation);
             }
-            
-                        locked = false;
+
+            locked = false;
         }
     }
 
     public static void MoveDirectory(string source, string target)
     {
+        Directory.Move(source, source + "~");
+        
         string sourcePath = source.TrimEnd('\\', ' ').Replace("/", "\\");
         string targetPath = target.TrimEnd('\\', ' ').Replace("/", "\\");
-        
-        CopyFilesRecursively(sourcePath, targetPath);
 
-        Directory.Move(source, source + "~");
+        CopyFilesRecursively(sourcePath + "~", targetPath);
+
         locked = false;
     }
-    
-    private static void CopyFilesRecursively(string sourcePath, string targetPath)
+
+    static void CopyFilesRecursively(string sourcePath, string targetPath)
     {
         //Now Create all of the directories
         foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
@@ -120,7 +144,7 @@ public static class ExtractPackage
         }
 
         //Copy all the files & Replaces any files with the same name
-        foreach (string newPath in Directory.GetFiles(sourcePath, "*.*",SearchOption.AllDirectories))
+        foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
         {
             File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
         }
