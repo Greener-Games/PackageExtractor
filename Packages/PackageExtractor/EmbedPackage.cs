@@ -42,7 +42,7 @@ public static class EmbedPackage
     }
     
 
-    [MenuItem("Assets/Embed Package", false, 99999999)]
+    [MenuItem("Tools/GreenerGames/Embed Package", false, 99999999)]
     static void EmbedPackageMenuItem()
     {
         Object selection = Selection.activeObject;
@@ -52,7 +52,7 @@ public static class EmbedPackage
         EditorApplication.update += EmbedProcess;
     }
 
-    [MenuItem("Assets/Embed Package", true)]
+    [MenuItem("Tools/GreenerGames/Embed Package", true)]
     static bool EmbedPackageValidation()
     {
         Object selection = Selection.activeObject;
